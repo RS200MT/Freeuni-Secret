@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "241022157214",
+    "firebase_url": "https://freeuni-secret.firebaseio.com",
+    "project_id": "freeuni-secret",
+    "storage_bucket": "freeuni-secret.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241022157214:android:39bce8fd83343fdf",
+        "android_client_info": {
+          "package_name": "project1.freeunisecret"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241022157214-opgrlj24b5jkph9t311ct082kr4h10pd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "project1.freeunisecret",
+            "certificate_hash": "452fd687b3debc28e4ec308ee095f44eb7e66faf"
+          }
+        },
+        {
+          "client_id": "241022157214-2647vqf5uchv001k2craofm11ui2r2f3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ_WC-NDcdvoNljMIhNgO7WqswHWdqNlU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241022157214-2647vqf5uchv001k2craofm11ui2r2f3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
