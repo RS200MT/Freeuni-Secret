@@ -18,6 +18,7 @@ public class Post {
     private int numComments;
     private int numHearts;
     private ArrayList<Comment> comments;
+    private String imageUrl;
 
     public int getPostAuthorId() {
         return postAuthorId;
@@ -27,7 +28,7 @@ public class Post {
         this.postAuthorId = postAuthorId;
     }
 
-    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments, int id, int postAuthorId) {
+    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments, int id, int postAuthorId, String imageUrl) {
         this.text = text;
         this.createTime = createTime;
         this.numComments = numComments;
@@ -35,7 +36,16 @@ public class Post {
         this.comments = comments;
         this.id = id;
         this.postAuthorId = postAuthorId;
+        this.imageUrl = imageUrl;
 
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public int getId() {
