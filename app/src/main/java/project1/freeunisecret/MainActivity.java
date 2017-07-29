@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @BindView(R.id.main_toolbar_id)  Toolbar toolbar;
     @BindView(R.id.recycler_view_id)  RecyclerView recyclerView;
     @BindView(R.id.add_post_id)  FloatingActionButton addPostButton;
+    @BindView(R.id.log_out_btn_id) Button logoutBtn;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private GoogleApiClient mGoogleApiClient;

@@ -6,6 +6,5 @@
     android:layout_height="match_parent"
     tools:context="project1.freeunisecret.CreatePost"
     android:orientation="Vertical">
-    
-
+   
 </LinearLayout>
