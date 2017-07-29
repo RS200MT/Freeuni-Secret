@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 startActivity(new Intent(MainActivity.this,CreatePost.class));
             }
         });
-
+        
         initToolbar();
 //        initDrawer();
     }
