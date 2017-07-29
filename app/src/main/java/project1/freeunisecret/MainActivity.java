@@ -91,7 +91,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 startActivity(new Intent(MainActivity.this,CreatePost.class));
             }
         });
-        
+		logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFirebaseAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                startActivity(new Intent(MainActivity.this,SignInActivity.class));
+
+            }
+        });
         initToolbar();
 //        initDrawer();
     }
