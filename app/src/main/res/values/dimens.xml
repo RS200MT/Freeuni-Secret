@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="card_corner_radius">5dp</dimen>
-    <dimen name="text_size_large">10sp</dimen>
-    <dimen name="text_size_small">3sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_small">5sp</dimen>
     <dimen name="image_size">20dp</dimen>
+    <dimen name="margin">15dp</dimen>
+    <dimen name="margin_top_to_center">200dp</dimen>
 </resources>

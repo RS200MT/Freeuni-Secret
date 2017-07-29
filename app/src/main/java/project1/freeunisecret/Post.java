@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class Post {
     private int id;
-    private int postAuthorId;
+    private String postAuthorId;
     private String text;
     private long createTime;
     private int numComments;
@@ -20,15 +20,18 @@ public class Post {
     private ArrayList<Comment> comments;
     private String imageUrl;
 
-    public int getPostAuthorId() {
+    public String getPostAuthorId() {
         return postAuthorId;
     }
+    public Post(){
 
-    public void setPostAuthorId(int postAuthorId) {
+    }
+
+    public void setPostAuthorId(String postAuthorId) {
         this.postAuthorId = postAuthorId;
     }
 
-    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments, int id, int postAuthorId, String imageUrl) {
+    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments, int id, String postAuthorId, String imageUrl) {
         this.text = text;
         this.createTime = createTime;
         this.numComments = numComments;

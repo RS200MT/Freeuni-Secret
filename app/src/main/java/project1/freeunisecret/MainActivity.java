@@ -42,7 +42,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final String POST_CHILD = "Posts";
-    @BindView(R.id.drawer_layout_id)  DrawerLayout drawerLayout;
+    private static final CharSequence FREEUNI_EMAIL = "freeuni.edu.ge";
+    private static final int FREEUNI_EMAIL_LENGTH = 14;
+    // @BindView(R.id.drawer_layout_id)  DrawerLayout drawerLayout;
     @BindView(R.id.main_toolbar_id)  Toolbar toolbar;
     @BindView(R.id.recycler_view_id)  RecyclerView recyclerView;
     @BindView(R.id.add_post_id)  FloatingActionButton addPostButton;
@@ -74,22 +76,32 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         if (mFirebaseUser == null) {
             // Not signed in, launch the Sign In activity
+            logoutBtn.setVisibility(Button.GONE);
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
-        } else {
-            userName = mFirebaseUser.getDisplayName();
-            addPosts();
-
         }
+        checkEmail();
+        userName = mFirebaseUser.getDisplayName();
+        logoutBtn.setVisibility(Button.VISIBLE);
+        addPosts();
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,CreatePost.class));
             }
         });
+
         initToolbar();
-        initDrawer();
+//        initDrawer();
+    }
+
+    private void checkEmail() {
+        String userEmail = mFirebaseUser.getEmail();
+        String domain = userEmail.substring(userEmail.length()-FREEUNI_EMAIL_LENGTH,userEmail.length());
+        if(!domain.equals(FREEUNI_EMAIL)){
+            startActivity(new Intent(this,ErrorPage.class));
+        }
     }
 
     private void addPosts() {
@@ -113,10 +125,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     if(imageUrl != null){
                         setImage(imageUrl,viewHolder,post,true);
                     }
+
                 } else if (imageUrl != null){
                     setImage(imageUrl, viewHolder,post,false);
                 }
                 viewHolder.postTime.setText(post.getCreateTime());
+                viewHolder.numComments.setText(Integer.toString(post.getNumComments()));
+                viewHolder.numHearts.setText(Integer.toString(post.getNumHearts()));
             }
         };
 
@@ -189,19 +204,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private void initToolbar(){
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         assert actionBar != null;
         actionBar.setDisplayShowTitleEnabled(false);
     }
 
-    private void initDrawer(){
-
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(MainActivity.this,
-                drawerLayout,toolbar,R.string.open,R.string.close);
-        drawerToggle.syncState();
-    }
+//    private void initDrawer(){
+//
+//        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(MainActivity.this,
+//                drawerLayout,toolbar,R.string.open,R.string.close);
+//        drawerToggle.syncState();
+//    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
