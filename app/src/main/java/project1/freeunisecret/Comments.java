@@ -1,17 +1,12 @@
 package project1.freeunisecret;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,9 +15,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,8 +32,6 @@ public class Comments extends AppCompatActivity {
 
     @BindView(R.id.comments_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.write_comment) EditText et;
-//    private FirebaseRecyclerAdapter<Comment, Comments.CommentViewHolder>
-//            mFirebaseAdapter;
     private DatabaseReference firebaseDatabaseReference;
     private String postId;
     private String nodeKey ;
@@ -60,9 +50,9 @@ public class Comments extends AppCompatActivity {
         updateView();
         findkey();
     }
-    
 
-    private void findkey() {
+
+    private  void findkey() {
         final Query query = firebaseDatabaseReference.child(POST_CHILD).orderByChild("id");
         query.addChildEventListener(new ChildEventListener() {
             @Override

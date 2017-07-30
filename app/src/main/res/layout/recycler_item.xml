@@ -57,11 +57,11 @@
                 android:textSize="10sp"
                 android:layout_marginLeft="@dimen/margin"/>
             <ImageView
+                android:id="@+id/heart_image"
                 android:layout_width="@dimen/image_size"
                 android:layout_height="@dimen/image_size"
                 android:src="@drawable/heart"
                 android:layout_gravity="right"
-                android:onClick="Heart"
                 />
 
         </LinearLayout>

@@ -31,9 +31,12 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmList;
 
 import static android.R.attr.key;
 
@@ -59,13 +62,13 @@ public class CreatePost extends AppCompatActivity {
         addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_IMAGE);
-//                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(galleryIntent, REQUEST_IMAGE);
+//                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//                intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, REQUEST_IMAGE);
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, REQUEST_IMAGE);
             }
         });
     }
@@ -80,9 +83,16 @@ public class CreatePost extends AppCompatActivity {
         post.setNumHearts(0);
         post.setPostAuthorId(userId);
         post.setImageUrl(imageUrl);
-        post.setId(mFirebaseDatabaseReference.push().getKey());
+        String postId = mFirebaseDatabaseReference.push().getKey();
+        post.setId(postId);
         mFirebaseDatabaseReference.child(MainActivity.POST_CHILD)
                 .push().setValue(post);
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Heart heart = realm.createObject(Heart.class);
+        heart.setPostId(postId);
+        heart.setLovers(new RealmList<RealmString>());
+        realm.commitTransaction();
         startActivity(new Intent(this,MainActivity.class));
 
     }
@@ -101,6 +111,7 @@ public class CreatePost extends AppCompatActivity {
                     if(img.exists()) {
                         Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath());
                         postImg.setImageBitmap(bitmap);
+                        postImg.setVisibility(ImageView.VISIBLE);
                     }
                     Log.d(TAG, "Uri: " + uri.toString());
                     StorageReference storageReference =

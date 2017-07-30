@@ -29,15 +29,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -59,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             mFirebaseAdapter;
     private LinearLayoutManager linearLayoutManager;
     private String TAG = "MainActivity";
+    private String nodeKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     @Override
                     public void onClick(View view) {
                         Comments(id);
+                    }
+                });
+                viewHolder.heart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        heart(id);
                     }
                 });
             }
@@ -248,8 +264,92 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    public void Heart(View view){
+    private void heart(String postId){
+        findkey(postId);
 
+    }
+
+    private void updateHeartNum(final int n){
+        mFirebaseDatabaseReference.child(MainActivity.POST_CHILD).child(nodeKey).child("numHearts").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Long value = mutableData.getValue(Long.class);
+                if (value == null) {
+                    mutableData.setValue(0);
+                }
+                else {
+                    mutableData.setValue(value + n);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                Log.d("Comments", "transaction:onComplete:" + databaseError);
+            }
+        });
+    }
+
+    private void findkey(final String postId) {
+        final Query query = mFirebaseDatabaseReference.child(POST_CHILD).orderByChild("id");
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey();
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    String value = child.getValue().toString();
+                    if(postId.equals(value)){
+                        nodeKey = key;
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        String userId = mFirebaseUser.getUid();
+                        List<RealmString> lovers = realm.where(Heart.class).equalTo("postId",postId).findFirst().getLovers();
+                        boolean alreadyHearted = false;
+
+                        for(RealmString str : lovers){
+                            if(str.getStr().equals(userId))
+                                alreadyHearted = true;
+                        }
+                        if(alreadyHearted){
+                            for(RealmString rs : lovers){
+                                if(rs.getStr().equals(userId)){
+                                    lovers.remove(rs);
+                                    break;
+                                }
+                            }
+                            updateHeartNum(-1);
+                        } else{
+                            RealmString st = realm.createObject(RealmString.class);
+                            st.setStr(userId);
+                            lovers.add(st);
+                            updateHeartNum(1);
+                        }
+                        realm.commitTransaction();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder{
@@ -260,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         private TextView numHearts;
         private ImageView postImage;
         private ImageView comment;
+        private ImageView heart;
         public PostViewHolder(View itemView) {
             super(itemView);
             postText = (TextView) itemView.findViewById(R.id.post_text_id);
@@ -268,6 +369,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             numHearts = (TextView) itemView.findViewById(R.id.num_loves);
             postImage = (ImageView) itemView.findViewById(R.id.post_image_id);
             comment = (ImageView) itemView.findViewById(R.id.show_comments_id);
+            heart = (ImageView) itemView.findViewById(R.id.heart_image);
+
         }
     }
 }
