@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -13,8 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,9 +52,12 @@ public class CreatePost extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser user;
+    FirebaseStorage storage;
+    StorageReference storageRef ;    //change the url according to your firebase app
     private String imageUrl = null;
-
+    private Bitmap imgBitMap;
     private static final int REQUEST_IMAGE = 2;
+    private static final String FIREBASE_STORAGE_URL = "gs://freeuni-secret.appspot.com/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +66,8 @@ public class CreatePost extends AppCompatActivity {
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseAuth = FirebaseAuth.getInstance();
         user = mFirebaseAuth.getCurrentUser();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl(FIREBASE_STORAGE_URL);
         addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +106,13 @@ public class CreatePost extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        postImg.setImageBitmap(imgBitMap);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -107,11 +123,32 @@ public class CreatePost extends AppCompatActivity {
                 if (data != null) {
                     final Uri uri = data.getData();
                     String imgPath = getRealPathFromURI(uri);
-                    File img = new File(imgPath);
+                    final File img = new File(imgPath);
                     if(img.exists()) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(img.getAbsolutePath());
-                        postImg.setImageBitmap(bitmap);
-                        postImg.setVisibility(ImageView.VISIBLE);
+                        try{
+
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            imgBitMap = bitmap;
+                            postImg.setImageBitmap(bitmap);
+                            StorageReference childRef = storageRef.child(uri.toString());
+                            UploadTask uploadTask = childRef.putFile(uri);
+
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                @SuppressWarnings("VisibleForTests")
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    imageUrl = taskSnapshot.getDownloadUrl().toString();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                        } catch (Exception ex){
+
+                        }
+
                     }
                     Log.d(TAG, "Uri: " + uri.toString());
                     StorageReference storageReference =

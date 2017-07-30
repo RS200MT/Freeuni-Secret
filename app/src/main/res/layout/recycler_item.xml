@@ -25,7 +25,7 @@
         <ImageView
             android:id="@+id/post_image_id"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/post_image_size"
             android:visibility="gone"
             />
         <View
