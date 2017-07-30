@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String POST_CHILD = "Posts";
+    public static final String POST_CHILD = "Posts";
     private static final CharSequence FREEUNI_EMAIL = "freeuni.edu.ge";
     private static final int FREEUNI_EMAIL_LENGTH = 14;
     // @BindView(R.id.drawer_layout_id)  DrawerLayout drawerLayout;
@@ -137,9 +137,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 } else if (imageUrl != null){
                     setImage(imageUrl, viewHolder,post,false);
                 }
-                viewHolder.postTime.setText(post.getCreateTime());
+                viewHolder.postTime.setText(post.getDate());
                 viewHolder.numComments.setText(Integer.toString(post.getNumComments()));
                 viewHolder.numHearts.setText(Integer.toString(post.getNumHearts()));
+                final String id = post.getId();
+                viewHolder.comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Comments(id);
+                    }
+                });
             }
         };
 
@@ -234,7 +241,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
-    public void Comments(View view){
+    public void Comments(String postId){
+        Intent intent = new Intent(this,Comments.class);
+        intent.putExtra("postId", postId);
+        startActivity(intent);
 
     }
 
@@ -249,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         private TextView numComments;
         private TextView numHearts;
         private ImageView postImage;
+        private ImageView comment;
         public PostViewHolder(View itemView) {
             super(itemView);
             postText = (TextView) itemView.findViewById(R.id.post_text_id);
@@ -256,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             numComments = (TextView) itemView.findViewById(R.id.num_comments_id);
             numHearts = (TextView) itemView.findViewById(R.id.num_loves);
             postImage = (ImageView) itemView.findViewById(R.id.post_image_id);
+            comment = (ImageView) itemView.findViewById(R.id.show_comments_id);
         }
     }
 }

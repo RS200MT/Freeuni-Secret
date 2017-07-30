@@ -1,6 +1,6 @@
 package project1.freeunisecret;
 
-import org.w3c.dom.Comment;
+import android.support.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Date;
  */
 
 public class Post {
-    private int id;
+    private String id;
     private String postAuthorId;
     private String text;
     private long createTime;
@@ -31,7 +31,7 @@ public class Post {
         this.postAuthorId = postAuthorId;
     }
 
-    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments, int id, String postAuthorId, String imageUrl) {
+    public Post(String text, long createTime, int numComments, int numHearts, ArrayList<Comment> comments,  String id, String postAuthorId, String imageUrl) {
         this.text = text;
         this.createTime = createTime;
         this.numComments = numComments;
@@ -51,11 +51,11 @@ public class Post {
         this.imageUrl = imageUrl;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -67,7 +67,11 @@ public class Post {
         this.text = text;
     }
 
-    public String getCreateTime() {
+    public Long getCreateTime() {
+       return this.createTime;
+    }
+
+    public String getDate(){
         return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(createTime));
     }
 

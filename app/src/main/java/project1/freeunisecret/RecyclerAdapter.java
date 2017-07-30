@@ -7,54 +7,47 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tornike on 27-Jul-17.
  */
 
-public class RecyclerAdapter  extends RecyclerView.Adapter<RecyclerAdapter.PostViewHolder> {
+public class RecyclerAdapter  extends RecyclerView.Adapter<RecyclerAdapter.CommentViewHolder> {
 
-    private MainActivity mainActivity;
-    private ArrayList<Post> posts;
+    private List<Comment> comments;
 
-    public RecyclerAdapter(ArrayList<Post> posts) {
-        this.posts = posts;
+    public RecyclerAdapter(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
-    public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mainActivity = (MainActivity) parent.getContext();
-        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item,null);
-        return new PostViewHolder(itemView);
+    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_recycler_item,null);
+        return new CommentViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(PostViewHolder holder, int position) {
-        holder.postText.setText(posts.get(position).getText());
-        holder.postTime.setText(posts.get(position).getCreateTime());
-        holder.numComments.setText(posts.get(position).getNumComments());
-        holder.numHearts.setText(posts.get(position).getNumHearts());
+    public void onBindViewHolder(CommentViewHolder holder, int position) {
+        holder.commentText.setText(comments.get(position).getCommentText());
+        holder.commentTime.setText(comments.get(position).getWriteDate());
+
     }
 
     @Override
     public int getItemCount() {
-        return posts.size();
+        return comments.size();
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder{
+    public static class CommentViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView postText;
-        private TextView postTime;
-        private TextView numComments;
-        private TextView numHearts;
+        private TextView commentText;
+        private TextView commentTime;
 
-        public PostViewHolder(View itemView) {
+        public CommentViewHolder(View itemView) {
             super(itemView);
-            postText = (TextView) itemView.findViewById(R.id.post_text_id);
-            postTime = (TextView) itemView.findViewById(R.id.post_time_id);
-            numComments = (TextView) itemView.findViewById(R.id.num_comments_id);
-            numHearts = (TextView) itemView.findViewById(R.id.num_loves);
-
+            commentText = (TextView) itemView.findViewById(R.id.comment_text);
+            commentTime = (TextView) itemView.findViewById(R.id.comment_write_time);
         }
     }
 }

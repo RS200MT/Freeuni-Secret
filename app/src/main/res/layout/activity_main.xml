@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#47C4D6">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar_id"
@@ -23,7 +24,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_id"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="330dp">
     </android.support.v7.widget.RecyclerView>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_post_id"
