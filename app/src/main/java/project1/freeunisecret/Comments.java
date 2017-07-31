@@ -1,5 +1,6 @@
 package project1.freeunisecret;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.squareup.picasso.Picasso;
+
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +38,15 @@ public class Comments extends AppCompatActivity {
 
     @BindView(R.id.comments_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.write_comment) EditText et;
+    @BindView(R.id.post_text_in_comments) TextView text;
+    @BindView(R.id.post_time_in_comments) TextView time;
+    @BindView(R.id.post_image_in_comments) ImageView img;
+    @BindView(R.id.edit_button) ImageView editButton;
     private DatabaseReference firebaseDatabaseReference;
     private String postId;
+    String postText;
+    String imageUrl;
+    private  String postTime;
     private String nodeKey ;
     private LinearLayoutManager linearLayoutManager;
     private Realm realm;
@@ -44,9 +57,33 @@ public class Comments extends AppCompatActivity {
         ButterKnife.bind(this);
         linearLayoutManager = new LinearLayoutManager(this);
         postId = getIntent().getStringExtra("postId");
+        postText = getIntent().getStringExtra("postText");
+        imageUrl = getIntent().getStringExtra("imageUrl");
+        postTime = getIntent().getStringExtra("postTime");
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         realm = Realm.getDefaultInstance();
         recyclerView.setLayoutManager(linearLayoutManager);
+        if(postText != null)
+            text.setText(postText);
+        time.setText(postTime);
+        if(!imageUrl.isEmpty()){
+            img.setVisibility(ImageView.VISIBLE);
+            Picasso.with(this).load(imageUrl).into(img);
+        }
+        boolean canEdit = getIntent().getBooleanExtra("canEdit", false);
+        if(canEdit){
+            editButton.setVisibility(ImageView.VISIBLE);
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Comments.this, EditPost.class);
+                    intent.putExtra("postText",postText);
+                    intent.putExtra("imageUrl",imageUrl);
+                    intent.putExtra("postId",postId);
+                    startActivity(intent);
+                }
+            });
+        }
         updateView();
         findkey();
     }

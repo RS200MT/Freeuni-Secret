@@ -57,7 +57,7 @@ public class CreatePost extends AppCompatActivity {
     private String imageUrl = null;
     private Bitmap imgBitMap;
     private static final int REQUEST_IMAGE = 2;
-    private static final String FIREBASE_STORAGE_URL = "gs://freeuni-secret.appspot.com/";
+    public static final String FIREBASE_STORAGE_URL = "gs://freeuni-secret.appspot.com/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +91,11 @@ public class CreatePost extends AppCompatActivity {
         post.setNumComments(0);
         post.setNumHearts(0);
         post.setPostAuthorId(userId);
-        post.setImageUrl(imageUrl);
+        if(imageUrl == null){
+            post.setImageUrl("");
+        } else {
+            post.setImageUrl(imageUrl);
+        }
         String postId = mFirebaseDatabaseReference.push().getKey();
         post.setId(postId);
         mFirebaseDatabaseReference.child(MainActivity.POST_CHILD)
@@ -122,74 +126,37 @@ public class CreatePost extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     final Uri uri = data.getData();
-                    String imgPath = getRealPathFromURI(uri);
-                    final File img = new File(imgPath);
-                    if(img.exists()) {
-                        try{
+                    try{
 
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            imgBitMap = bitmap;
-                            postImg.setImageBitmap(bitmap);
-                            StorageReference childRef = storageRef.child(uri.toString());
-                            UploadTask uploadTask = childRef.putFile(uri);
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        imgBitMap = bitmap;
+                        postImg.setImageBitmap(bitmap);
+                        StorageReference childRef = storageRef.child(uri.toString());
+                        UploadTask uploadTask = childRef.putFile(uri);
 
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                @SuppressWarnings("VisibleForTests")
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    imageUrl = taskSnapshot.getDownloadUrl().toString();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                }
-                            });
-                        } catch (Exception ex){
-
-                        }
+                        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            @SuppressWarnings("VisibleForTests")
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                imageUrl = taskSnapshot.getDownloadUrl().toString();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                int id =2;
+                            }
+                        });
+                    } catch (Exception ex){
 
                     }
                     Log.d(TAG, "Uri: " + uri.toString());
-                    StorageReference storageReference =
-                            FirebaseStorage.getInstance()
-                                    .getReference(user.getUid())
-                                    .child(uri.getLastPathSegment());
-                    putImageInStorage(storageReference, uri);
                 }
             }
         }
     }
 
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
-    }
 
-    @SuppressWarnings("VisibleForTests")
-    private void putImageInStorage(StorageReference storageReference, Uri uri) {
-        storageReference.putFile(uri).addOnCompleteListener(CreatePost.this,
-                new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                             imageUrl = task.getResult().getMetadata().getDownloadUrl()
-                                    .toString();
-                        } else {
-                            Log.w(TAG, "Image upload task was not successful.",
-                                    task.getException());
-                        }
-                    }
-                });
-    }
+
+
 
 }

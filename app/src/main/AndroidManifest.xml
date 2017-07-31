@@ -24,6 +24,7 @@
         <activity android:name=".CreatePost" />
         <activity android:name=".ErrorPage"></activity>
         <activity android:name=".Comments"/>
+        <activity android:name=".EditPost"/>
     </application>
 
 </manifest>

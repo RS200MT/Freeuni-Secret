@@ -4,6 +4,7 @@
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_small">5sp</dimen>
     <dimen name="image_size">20dp</dimen>
+    <dimen name="image_btn_size">40dp</dimen>
     <dimen name="margin">15dp</dimen>
     <dimen name="margin_top_to_center">200dp</dimen>
     <dimen name="recycler_item_margin">25dp</dimen>

@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .build();
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -134,29 +136,32 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             @Override
             protected void populateViewHolder(final PostViewHolder viewHolder,
-                                              Post post, int position) {
+                                              final Post post, int position) {
                 //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 String imageUrl = post.getImageUrl();
-                if (post.getText() != null) {
+                if (!post.getText().isEmpty()) {
                     viewHolder.postText.setText(post.getText());
                     viewHolder.postImage.setVisibility(ImageView.GONE);
-                    if(imageUrl != null){
+                    if(!imageUrl.isEmpty()){
                         setImage(imageUrl,viewHolder,post,true);
                     }
 
-                } else if (imageUrl != null){
+                } else if (!imageUrl.isEmpty()){
                     setImage(imageUrl, viewHolder,post,false);
                 }
                 viewHolder.postTime.setText(post.getDate());
                 viewHolder.numComments.setText(Integer.toString(post.getNumComments()));
                 viewHolder.numHearts.setText(Integer.toString(post.getNumHearts()));
                 final String id = post.getId();
-                viewHolder.comment.setOnClickListener(new View.OnClickListener() {
+                View.OnClickListener onclick = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Comments(id);
+                        boolean canEdit = post.getPostAuthorId().equals(mFirebaseUser.getUid()) ? true : false;
+                        Comments(id,post.getText(),post.getImageUrl(), post.getDate(),canEdit);
                     }
-                });
+                };
+                viewHolder.comment.setOnClickListener(onclick);
+                viewHolder.card.setOnClickListener(onclick);
                 viewHolder.heart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -257,9 +262,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
-    public void Comments(String postId){
+    public void Comments(String postId,String postText, String imageUrl,String postTime, boolean canEdit){
         Intent intent = new Intent(this,Comments.class);
         intent.putExtra("postId", postId);
+        intent.putExtra("postText", postText);
+        intent.putExtra("imageUrl", imageUrl);
+        intent.putExtra("postTime",postTime);
+        intent.putExtra("canEdit",canEdit);
         startActivity(intent);
 
     }
@@ -361,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         private ImageView postImage;
         private ImageView comment;
         private ImageView heart;
+        private CardView card;
         public PostViewHolder(View itemView) {
             super(itemView);
             postText = (TextView) itemView.findViewById(R.id.post_text_id);
@@ -370,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             postImage = (ImageView) itemView.findViewById(R.id.post_image_id);
             comment = (ImageView) itemView.findViewById(R.id.show_comments_id);
             heart = (ImageView) itemView.findViewById(R.id.heart_image);
-
+            card = (CardView) itemView.findViewById(R.id.post_id);
         }
     }
 }

@@ -7,4 +7,5 @@
     <string name="log_out_btn_text">Log Out</string>
     <string name="error_text">You need FreeUni Email to Log In</string>
     <string name="add_comment_button_text">Add Comment</string>
+    <string name="save_button_text">Save</string>
 </resources>
