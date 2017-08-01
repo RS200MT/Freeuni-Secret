@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -19,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -42,6 +44,8 @@ public class Comments extends AppCompatActivity {
     @BindView(R.id.post_time_in_comments) TextView time;
     @BindView(R.id.post_image_in_comments) ImageView img;
     @BindView(R.id.edit_button) ImageView editButton;
+    @BindView(R.id.progressBar_in_comments)
+    ProgressBar progressBar;
     private DatabaseReference firebaseDatabaseReference;
     private String postId;
     String postText;
@@ -68,7 +72,7 @@ public class Comments extends AppCompatActivity {
         time.setText(postTime);
         if(!imageUrl.isEmpty()){
             img.setVisibility(ImageView.VISIBLE);
-            Picasso.with(this).load(imageUrl).into(img);
+            
         }
         boolean canEdit = getIntent().getBooleanExtra("canEdit", false);
         if(canEdit){
