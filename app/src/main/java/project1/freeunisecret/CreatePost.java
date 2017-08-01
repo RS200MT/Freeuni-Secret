@@ -86,6 +86,33 @@ public class CreatePost extends AppCompatActivity {
                 startActivityForResult(galleryIntent, REQUEST_IMAGE);
             }
         });
+		postText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(s.toString().trim().length()==0 && imageUrl == null){
+                    addPostButton.setEnabled(false);
+                } else {
+                    addPostButton.setEnabled(true);
+                }
+
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
     }
 
@@ -146,7 +173,7 @@ public class CreatePost extends AppCompatActivity {
                             @SuppressWarnings("VisibleForTests")
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 imageUrl = taskSnapshot.getDownloadUrl().toString();
-                                
+                                addPostButton.setEnabled(true);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
