@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin"
             android:text="@string/post_button_text"
+            android:enabled="false"
             android:onClick="addPost"/>
     </LinearLayout>
 

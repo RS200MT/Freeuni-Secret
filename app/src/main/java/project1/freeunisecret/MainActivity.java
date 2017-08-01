@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         private ImageView comment;
         private ImageView heart;
         private CardView card;
+        private ProgressBar progressbar;
         public PostViewHolder(View itemView) {
             super(itemView);
             postText = (TextView) itemView.findViewById(R.id.post_text_id);
@@ -381,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             comment = (ImageView) itemView.findViewById(R.id.show_comments_id);
             heart = (ImageView) itemView.findViewById(R.id.heart_image);
             card = (CardView) itemView.findViewById(R.id.post_id);
+            progressbar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
 }

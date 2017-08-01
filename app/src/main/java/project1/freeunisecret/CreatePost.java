@@ -11,8 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
 
+import static android.R.attr.button;
 import static android.R.attr.key;
 
 public class CreatePost extends AppCompatActivity {
@@ -49,6 +53,8 @@ public class CreatePost extends AppCompatActivity {
     @BindView(R.id.add_photo_btn_id) ImageView addPhoto;
     @BindView(R.id.post_text_edit_text_id) TextInputEditText postText;
     @BindView(R.id.new_post_img) ImageView postImg;
+    @BindView(R.id.post_btn_id)
+    Button addPostButton;
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser user;
@@ -80,6 +86,7 @@ public class CreatePost extends AppCompatActivity {
                 startActivityForResult(galleryIntent, REQUEST_IMAGE);
             }
         });
+
     }
 
     public void addPost(View v){
@@ -139,6 +146,7 @@ public class CreatePost extends AppCompatActivity {
                             @SuppressWarnings("VisibleForTests")
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 imageUrl = taskSnapshot.getDownloadUrl().toString();
+                                
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
