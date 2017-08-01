@@ -205,7 +205,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 String downloadUrl = task.getResult().toString();
                                 Picasso.with(viewHolder.postImage.getContext())
                                         .load(downloadUrl)
-                                        .into(viewHolder.postImage);
+                                        .into(viewHolder.postImage, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                viewHolder.progressbar.setVisibility(ProgressBar.GONE);
+                                            }
+
+                                            @Override
+                                            public void onError() {
+
+                                            }
+                                        });
                             } else {
                                 Log.w(TAG, "Getting download url was not successful.",
                                         task.getException());
@@ -215,7 +225,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         } else {
             Picasso.with(viewHolder.postImage.getContext())
                     .load(post.getImageUrl())
-                    .into(viewHolder.postImage);
+                    .into(viewHolder.postImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            viewHolder.progressbar.setVisibility(ProgressBar.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         }
         viewHolder.postImage.setVisibility(ImageView.VISIBLE);
         if (!withText)
