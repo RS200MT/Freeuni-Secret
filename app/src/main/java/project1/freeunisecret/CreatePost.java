@@ -158,6 +158,7 @@ public class CreatePost extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
+                    addPostButton.setEnabled(false);
                     final Uri uri = data.getData();
                     try{
 
@@ -177,7 +178,7 @@ public class CreatePost extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                int id =2;
+                                addPostButton.setEnabled(true);
                             }
                         });
                     } catch (Exception ex){

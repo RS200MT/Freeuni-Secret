@@ -145,10 +145,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     viewHolder.postImage.setVisibility(ImageView.GONE);
                     if(!imageUrl.isEmpty()){
                         setImage(imageUrl,viewHolder,post,true);
+                    } else {
+                        viewHolder.progressbar.setVisibility(ProgressBar.GONE);
                     }
 
                 } else if (!imageUrl.isEmpty()){
                     setImage(imageUrl, viewHolder,post,false);
+                } else {
+                    viewHolder.progressbar.setVisibility(ProgressBar.GONE);
                 }
                 viewHolder.postTime.setText(post.getDate());
                 viewHolder.numComments.setText(Integer.toString(post.getNumComments()));

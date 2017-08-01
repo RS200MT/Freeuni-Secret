@@ -28,7 +28,13 @@
         android:id="@+id/post_time_in_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    
+	<ProgressBar
+        android:id="@+id/progressBar_in_comments"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
     <ImageView
         android:id="@+id/post_image_in_comments"
         android:layout_width="wrap_content"
@@ -58,6 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_comment_button_text"
+            android:enabled="false"
             android:onClick="addComment"/>
     </LinearLayout>
 

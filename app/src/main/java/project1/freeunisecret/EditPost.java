@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
+import static android.R.attr.button;
 import static android.R.attr.data;
 import static project1.freeunisecret.CreatePost.FIREBASE_STORAGE_URL;
 import static project1.freeunisecret.MainActivity.POST_CHILD;
@@ -72,6 +75,33 @@ public class EditPost extends AppCompatActivity {
         postText = getIntent().getStringExtra("postText");
         imageUrl = getIntent().getStringExtra("imageUrl");
         initImageUrl = imageUrl;
+        postTextET.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(s.toString().trim().length()==0 && imageUrl.isEmpty()){
+                    save.setEnabled(false);
+                } else {
+                    save.setEnabled(true);
+                }
+
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
         postId = getIntent().getStringExtra("postId");
         if(postText != null)
             postTextET.setText(postText);
@@ -145,6 +175,7 @@ public class EditPost extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
+                    save.setEnabled(false);
                     final Uri uri = data.getData();
                         try{
 
@@ -159,11 +190,12 @@ public class EditPost extends AppCompatActivity {
                                 @SuppressWarnings("VisibleForTests")
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     imageUrl = taskSnapshot.getDownloadUrl().toString();
+                                    save.setEnabled(true);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    int id = 2232;
+                                    save.setEnabled(true);
                                 }
                             });
                         } catch (Exception ex){

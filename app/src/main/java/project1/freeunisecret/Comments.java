@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -46,6 +49,8 @@ public class Comments extends AppCompatActivity {
     @BindView(R.id.edit_button) ImageView editButton;
     @BindView(R.id.progressBar_in_comments)
     ProgressBar progressBar;
+    @BindView(R.id.add_comment)
+    Button addCommentButton;
     private DatabaseReference firebaseDatabaseReference;
     private String postId;
     String postText;
@@ -72,7 +77,19 @@ public class Comments extends AppCompatActivity {
         time.setText(postTime);
         if(!imageUrl.isEmpty()){
             img.setVisibility(ImageView.VISIBLE);
-            
+            Picasso.with(this).load(imageUrl).into(img, new Callback() {
+                @Override
+                public void onSuccess() {
+                    progressBar.setVisibility(ProgressBar.GONE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        } else {
+            progressBar.setVisibility(ProgressBar.GONE);
         }
         boolean canEdit = getIntent().getBooleanExtra("canEdit", false);
         if(canEdit){
@@ -88,6 +105,33 @@ public class Comments extends AppCompatActivity {
                 }
             });
         }
+        et.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(s.toString().trim().length()==0){
+                    addCommentButton.setEnabled(false);
+                } else {
+                    addCommentButton.setEnabled(true);
+                }
+
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
         updateView();
         findkey();
     }
