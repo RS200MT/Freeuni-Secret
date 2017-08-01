@@ -68,7 +68,17 @@ public class Comments extends AppCompatActivity {
         time.setText(postTime);
         if(!imageUrl.isEmpty()){
             img.setVisibility(ImageView.VISIBLE);
-            Picasso.with(this).load(imageUrl).into(img);
+            Picasso.with(this).load(imageUrl).into(img, new Callback() {
+                @Override
+                public void onSuccess() {
+                    progressBar.setVisibility(ProgressBar.GONE);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         }
         boolean canEdit = getIntent().getBooleanExtra("canEdit", false);
         if(canEdit){
