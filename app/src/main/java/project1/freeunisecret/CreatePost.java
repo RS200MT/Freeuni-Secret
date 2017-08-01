@@ -86,7 +86,6 @@ public class CreatePost extends AppCompatActivity {
                 startActivityForResult(galleryIntent, REQUEST_IMAGE);
             }
         });
-
     }
 
     public void addPost(View v){
@@ -146,7 +145,8 @@ public class CreatePost extends AppCompatActivity {
                             @SuppressWarnings("VisibleForTests")
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 imageUrl = taskSnapshot.getDownloadUrl().toString();
-                                
+
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
